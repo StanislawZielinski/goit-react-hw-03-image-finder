@@ -4,7 +4,8 @@ class Button extends Component {
 
     render() {
         return (
-            <button className="Button" onClick={this.props.loadMore}>Load more</button>
+            <button className="Button" onClick={this.props.loadMore}
+                style={{ visibility: this.props.isButtonVisible }}>Load more</button>
         )
     }
 }

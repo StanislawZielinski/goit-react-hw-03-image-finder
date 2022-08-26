@@ -14,35 +14,31 @@ axios.defaults.baseURL = "https://pixabay.com/api/"
 let pageNr = 1;
 let searchValue = '';
 class ImageFinder extends Component {
+    static defaultProps = {
+    search: [],
+  };
     state = {
-        images: []
+        images: [],
+        isButtonVisible: "hidden",
     }
-
-    // async componentDidMount() {
-    //     const response = await axios.get(`?${this.searchParams}`);
-    //     this.setState({ ...this.setState, images: response.data.hits });
-    //     console.log("componentDidMount")
-    // }
     
     handleSubmit = (event) => {
         event.preventDefault();
         const form = event.currentTarget;
         searchValue = form.elements.search.value;
-        // form.reset();
+        form.reset();
         pageNr = 1;
+        this.setState({images:[]})
         this.fetchImages(searchValue, pageNr);
-        console.log(searchValue);
         return searchValue;
     }
-    showSth(searchValue) {
-        console.log(searchValue)
-    }
-    async fetchImages(searchValue, pageNr) {
+
+    async fetchImages (searchValue, pageNr) {
         const searchParams = new URLSearchParams(
             {
                 key: API_KEY,
                 q: searchValue,
-                per_page: 12,
+                per_page: 3,
                 page: pageNr,
                 image_type: "photo",
                 orientation: "horizontal",
@@ -50,14 +46,14 @@ class ImageFinder extends Component {
             }
          );  
         const response = await axios.get(`?${searchParams}`);
-        this.setState({ ...this.setState, images: response.data.hits });
-        console.log(response);
+        this.setState({
+            images: [...this.state.images, ...response.data.hits],
+            isButtonVisible: true,
+        })
     }
 
     loadMore = () => {
         pageNr += 1;
-        console.log(pageNr);
-        console.log(searchValue);
         this.fetchImages(searchValue, pageNr);
     }
     renderImages = (images) => {
@@ -76,9 +72,7 @@ class ImageFinder extends Component {
             <div>
                 <Searchbar onSubmit={this.handleSubmit} />          
                 <ul className="ImageGallery">{this.renderImages(images)}</ul>
-                <Button loadMore={this.loadMore}/>
-
-
+                <Button loadMore={this.loadMore} isButtonVisible={this.state.isButtonVisible} />
             </div>
         )
     }
