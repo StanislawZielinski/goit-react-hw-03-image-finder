@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import Searchbar from "../Searchbar/Searchbar";
-import ImageGallery from "../ImageGallery/ImageGallery";
-import ImageGalleryItem from "../ImageGallery/ImageGalleryItem";
-import Loader from "../Loader/Loader";
 import Button from "../Button/Button";
-import Modal from "../Modal/Modal";
-import PropTypes from 'prop-types';
+// import ImageGallery from "../ImageGallery/ImageGallery";
+// import ImageGalleryItem from "../ImageGallery/ImageGalleryItem";
+// import Loader from "../Loader/Loader";
+// import Modal from "../Modal/Modal";
+// import PropTypes from 'prop-types';
 const API_KEY = '28203095-60f45d0309e92efa731dcf20a';
 // import axios from "axios";
 
