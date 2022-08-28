@@ -26,7 +26,8 @@ class ImageFinder extends Component {
         isSpinnerLoading: true,
         isModalVisible: "hidden",
         imageLargeURL: "",
-        alt:"",
+        alt: "",
+        error: null,
     }
     componentDidMount() {
         this.setState ({isSpinnerLoading:false})
@@ -55,22 +56,28 @@ class ImageFinder extends Component {
                 safesearch: "true",
             }
         );
-        
-        const response = await axios.get(`?${searchParams}`);
-        console.log(response);
-
-        if (response.data.total > 0) {
-           this.setState({ isButtonVisible: "visible" }) 
+        try {
+            const response = await axios.get(`?${searchParams}`);
+            if (response.data.total > 0) {
+                this.setState({
+                    isButtonVisible: "visible",
+                    images: [...this.state.images, ...response.data.hits]
+                }) 
+            }
+            else {
+                this.setState({ isButtonVisible: "hidden" });
+                alert("please insert proper search request")
+            }
+        } catch (error) {
+            this.setState({ error });
+            console.log(error)
         }
-        else {
-            this.setState({ isButtonVisible: "hidden" });
-            alert("please insert proper search request")
-        }
-        this.setState({
-            images: [...this.state.images, ...response.data.hits],
-            isSpinnerLoading: false,
-        });
-        scroll();
+        finally {
+            this.setState({
+                isSpinnerLoading: false
+            });
+            scroll();
+        }   
     }
 
     loadMore = () => {
@@ -88,7 +95,6 @@ class ImageFinder extends Component {
     }    
     closeModal = (event) => {
         event.stopPropagation();
-        console.log(event.target.nodeName);
         if (event.target.nodeName==="IMG") {
             return
         }
@@ -116,7 +122,7 @@ class ImageFinder extends Component {
     render() {
         const { images, isButtonVisible, isSpinnerLoading, isModalVisible } = this.state;
         if (isModalVisible === "visible") {
-            window.addEventListener('keydown', this.closeModalByEsc)
+            document.addEventListener('keydown', this.closeModalByEsc)
         } 
         return (
             <div>

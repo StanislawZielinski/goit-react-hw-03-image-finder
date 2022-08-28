@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 class Button extends Component {
 
@@ -11,3 +12,8 @@ class Button extends Component {
 }
 
 export default Button;
+
+Button.propTypes = {
+    loadMore: PropTypes.func.isRequired,
+    isButtonVisible: PropTypes.string.isRequired
+}
