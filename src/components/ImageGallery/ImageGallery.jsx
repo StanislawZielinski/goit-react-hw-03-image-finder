@@ -1,14 +1,18 @@
 import React, { Component } from "react";
-import ImageGalleryItem from "./ImageGalleryItem";
+import PropTypes from "prop-types";
+// import ImageGalleryItem from "./ImageGalleryItem";
 class ImageGallery extends Component {
 
     render() {
         return (
             <ul className="ImageGallery">
-                <ImageGalleryItem />
+                {this.props.children}
             </ul>
         )
     }
 }
 
 export default ImageGallery;
+ImageGallery.propTypes = {
+    children: PropTypes.func.isRequired,
+}

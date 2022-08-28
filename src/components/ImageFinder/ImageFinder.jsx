@@ -1,25 +1,19 @@
 import React, { Component } from "react";
-// import * as basicLightbox from 'basiclightbox';
 import Searchbar from "../Searchbar/Searchbar";
 import Button from "../Button/Button";
 import { Audio } from 'react-loader-spinner';
 import scroll from '../Scroll/Scroll';
 import Modal from "../Modal/Modal";
-// import ImageGallery from "../ImageGallery/ImageGallery";
+import ImageGallery from "../ImageGallery/ImageGallery";
 // import ImageGalleryItem from "../ImageGallery/ImageGalleryItem";
-// import Loader from "../Loader/Loader";
 
-// import PropTypes from 'prop-types';
 const API_KEY = '28203095-60f45d0309e92efa731dcf20a';
-
-
 const axios = require('axios').default;
 axios.defaults.baseURL = "https://pixabay.com/api/"
 let pageNr = 1;
 let searchValue = '';
-// let imageLargeURL = '';
-class ImageFinder extends Component {
 
+class ImageFinder extends Component {
     state = {
         images: [],
         isButtonVisible: "hidden",
@@ -126,8 +120,8 @@ class ImageFinder extends Component {
         } 
         return (
             <div>
-                <Searchbar onSubmit={this.handleSubmit} />          
-                <ul className="ImageGallery">{this.renderImages(images)}</ul>
+                <Searchbar onSubmit={this.handleSubmit} />
+                <ImageGallery children={this.renderImages(images)} ></ImageGallery>
                 <Button loadMore={this.loadMore} isButtonVisible={isButtonVisible} />
                 <Audio className="Audio" visible={isSpinnerLoading} />
                 <Modal isModalVisible={isModalVisible} imageLargeURL={this.state.imageLargeURL}
