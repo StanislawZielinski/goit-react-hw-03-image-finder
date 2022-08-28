@@ -14,5 +14,5 @@ class ImageGallery extends Component {
 
 export default ImageGallery;
 ImageGallery.propTypes = {
-    children: PropTypes.func.isRequired,
+    children: PropTypes.array.isRequired,
 }
