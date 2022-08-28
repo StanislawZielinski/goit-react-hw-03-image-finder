@@ -54,7 +54,8 @@ class ImageFinder extends Component {
                 orientation: "horizontal",
                 safesearch: "true",
             }
-         );  
+        );
+        
         const response = await axios.get(`?${searchParams}`);
         console.log(response);
 
@@ -75,12 +76,10 @@ class ImageFinder extends Component {
     loadMore = () => {
         pageNr += 1;
         this.fetchImages(searchValue, pageNr);
-        // scroll();
     }
     
     openModal = (event) => {
         event.preventDefault();
-        console.log(event.target.alt);
         this.setState({
             isModalVisible: "visible",
             imageLargeURL: event.currentTarget.href,
@@ -88,13 +87,23 @@ class ImageFinder extends Component {
         });
     }    
     closeModal = (event) => {
+        event.stopPropagation();
+        console.log(event.target.nodeName);
+        if (event.target.nodeName==="IMG") {
+            return
+        }
             this.setState({
             isModalVisible: "hidden",
             imageLargeURL: "",    
             });
-        console.log("1234")
     }
-
+    closeModalByEsc = (event) => {
+        if (event.keyCode === 27) {
+            this.setState({
+            isModalVisible: "hidden", 
+            });
+        }
+    }
     renderImages = (images) => {
         return images.map(
             image =>
@@ -106,7 +115,9 @@ class ImageFinder extends Component {
     }
     render() {
         const { images, isButtonVisible, isSpinnerLoading, isModalVisible } = this.state;
-        console.log(this.state.imageLargeURL)
+        if (isModalVisible === "visible") {
+            window.addEventListener('keydown', this.closeModalByEsc)
+        } 
         return (
             <div>
                 <Searchbar onSubmit={this.handleSubmit} />          
@@ -114,7 +125,7 @@ class ImageFinder extends Component {
                 <Button loadMore={this.loadMore} isButtonVisible={isButtonVisible} />
                 <Audio className="Audio" visible={isSpinnerLoading} />
                 <Modal isModalVisible={isModalVisible} imageLargeURL={this.state.imageLargeURL}
-                        alt={this.state.alt} closeModal={this.closeModal} />
+                        alt={this.state.alt} closeModal={this.closeModal}/>
             </div>
         )
     }
