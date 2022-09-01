@@ -10,8 +10,8 @@ import ImageGallery from "../ImageGallery/ImageGallery";
 const API_KEY = '28203095-60f45d0309e92efa731dcf20a';
 const axios = require('axios').default;
 axios.defaults.baseURL = "https://pixabay.com/api/"
-let pageNr = 1;
-let searchValue = '';
+// let pageNr = 1;
+// let searchValue = '';
 
 class ImageFinder extends Component {
     state = {
@@ -22,23 +22,32 @@ class ImageFinder extends Component {
         imageLargeURL: "",
         alt: "",
         error: null,
+        pageNr: 1,
+        searchValue: '',
     }
     componentDidMount() {
-        this.setState ({isSpinnerLoading:false})
+        this.setState({ isSpinnerLoading: false });
+    };
+    resetSearch= ()=> {
+        // this.state.pageNr = 1;
+            this.setState(
+            { images:[], pageNr:1 });
     }
     handleSubmit = (event) => {
         event.preventDefault();
+        this.resetSearch();
         const form = event.currentTarget;
-        searchValue = form.elements.search.value;
+        // this.state.searchValue = form.elements.search.value;
+        this.setState({
+            searchValue: form.elements.search.value });
+        console.log(form.elements.search.value)
+        console.log(this.state.searchValue, this.state.pageNr);
+        this.fetchImages(this.state.searchValue, this.state.pageNr);
         form.reset();
-        pageNr = 1;
-        this.setState({images:[]})
-        this.fetchImages(searchValue, pageNr);
-        return searchValue;
     }
 
     async fetchImages(searchValue, pageNr) {
-        this.setState ({isSpinnerLoading:true})
+        this.setState({ isSpinnerLoading: true });
         const searchParams = new URLSearchParams(
             {
                 key: API_KEY,
@@ -55,7 +64,8 @@ class ImageFinder extends Component {
             if (response.data.total > 0) {
                 this.setState({
                     isButtonVisible: "visible",
-                    images: [...this.state.images, ...response.data.hits]
+                    images: [...this.state.images, ...response.data.hits],
+                    pageNr: this.state.pageNr+1,
                 }) 
             }
             else {
@@ -74,9 +84,9 @@ class ImageFinder extends Component {
         }   
     }
 
-    loadMore = () => {
-        pageNr += 1;
-        this.fetchImages(searchValue, pageNr);
+    loadMore = (event) => {
+        event.preventDefault();
+        this.fetchImages(this.state.searchValue, this.state.pageNr);     
     }
     
     openModal = (event) => {
@@ -114,7 +124,7 @@ class ImageFinder extends Component {
                 </li>)     
     }
     render() {
-        const { images, isButtonVisible, isSpinnerLoading, isModalVisible } = this.state;
+        const { images, isButtonVisible, isSpinnerLoading, isModalVisible, pageNr } = this.state;
         if (isModalVisible === "visible") {
             document.addEventListener('keydown', this.closeModalByEsc)
         } 
@@ -122,7 +132,7 @@ class ImageFinder extends Component {
             <div>
                 <Searchbar onSubmit={this.handleSubmit} />
                 <ImageGallery children={this.renderImages(images)} ></ImageGallery>
-                <Button loadMore={this.loadMore} isButtonVisible={isButtonVisible} />
+                <Button loadMore={this.loadMore} isButtonVisible={isButtonVisible} pageNr={pageNr} />
                 <Audio className="Audio" visible={isSpinnerLoading} />
                 <Modal isModalVisible={isModalVisible} imageLargeURL={this.state.imageLargeURL}
                         alt={this.state.alt} closeModal={this.closeModal}/>
