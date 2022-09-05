@@ -5,7 +5,7 @@ import { Audio } from 'react-loader-spinner';
 import scroll from '../Scroll/Scroll';
 import Modal from "../Modal/Modal";
 import ImageGallery from "../ImageGallery/ImageGallery";
-import api from "services/api";
+import fetch from "services/api";
 
 
 class ImageFinder extends Component {
@@ -42,7 +42,7 @@ class ImageFinder extends Component {
     async fetchImages(searchValue, pageNr) {
         this.setState({ isSpinnerLoading: true });
         try {
-            const response = await api.fetch(searchValue, pageNr);
+            const response = await fetch(searchValue, pageNr);
             if (response.length > 0) {
                 this.setState({
                     isButtonVisible: "visible",

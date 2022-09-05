@@ -1,9 +1,8 @@
-
 const API_KEY = '28203095-60f45d0309e92efa731dcf20a';
 const axios = require('axios').default;
 axios.defaults.baseURL = "https://pixabay.com/api/";
 
-export const fetch = async (searchValue, pageNr) => {
+async function fetch (searchValue, pageNr) {
     const searchParams = new URLSearchParams(
         {
             key: API_KEY,
@@ -21,4 +20,4 @@ export const fetch = async (searchValue, pageNr) => {
     return response
 };
 
-export default { fetch };
+export default fetch;
