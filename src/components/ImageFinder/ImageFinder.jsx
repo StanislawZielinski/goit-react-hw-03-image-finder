@@ -5,10 +5,7 @@ import { Audio } from 'react-loader-spinner';
 import scroll from '../Scroll/Scroll';
 import Modal from "../Modal/Modal";
 import ImageGallery from "../ImageGallery/ImageGallery";
-
-const API_KEY = '28203095-60f45d0309e92efa731dcf20a';
-const axios = require('axios').default;
-axios.defaults.baseURL = "https://pixabay.com/api/"
+import api from "services/api";
 
 
 class ImageFinder extends Component {
@@ -44,23 +41,12 @@ class ImageFinder extends Component {
 
     async fetchImages(searchValue, pageNr) {
         this.setState({ isSpinnerLoading: true });
-        const searchParams = new URLSearchParams(
-            {
-                key: API_KEY,
-                q: searchValue,
-                per_page: 12,
-                page: pageNr,
-                image_type: "photo",
-                orientation: "horizontal",
-                safesearch: "true",
-            }
-        );
         try {
-            const response = await axios.get(`?${searchParams}`);
-            if (response.data.total > 0) {
+            const response = await api.fetch(searchValue, pageNr);
+            if (response.length > 0) {
                 this.setState({
                     isButtonVisible: "visible",
-                    images: [...this.state.images, ...response.data.hits],
+                    images: [...this.state.images, ...response],
                     pageNr: this.state.pageNr+1,
                 }) 
             }
@@ -77,7 +63,6 @@ class ImageFinder extends Component {
                 isSpinnerLoading: false
             });
             scroll();
-            console.log(this.state.pageNr);
         }   
     }
 
@@ -120,7 +105,7 @@ class ImageFinder extends Component {
                 </li>)     
     }
     render() {
-        const { images, isButtonVisible, isSpinnerLoading, isModalVisible, pageNr } = this.state;
+        const { images, isButtonVisible, isSpinnerLoading, isModalVisible } = this.state;
         if (isModalVisible === "visible") {
             document.addEventListener('keydown', this.closeModalByEsc)
         } 
