@@ -5,13 +5,11 @@ import { Audio } from 'react-loader-spinner';
 import scroll from '../Scroll/Scroll';
 import Modal from "../Modal/Modal";
 import ImageGallery from "../ImageGallery/ImageGallery";
-// import ImageGalleryItem from "../ImageGallery/ImageGalleryItem";
 
 const API_KEY = '28203095-60f45d0309e92efa731dcf20a';
 const axios = require('axios').default;
 axios.defaults.baseURL = "https://pixabay.com/api/"
-// let pageNr = 1;
-// let searchValue = '';
+
 
 class ImageFinder extends Component {
     state = {
@@ -29,20 +27,18 @@ class ImageFinder extends Component {
         this.setState({ isSpinnerLoading: false });
     };
     resetSearch= ()=> {
-        // this.state.pageNr = 1;
-            this.setState(
-            { images:[], pageNr:1 });
+        this.setState(() => {return {images: [], pageNr: 1} })
+    }
+    handleChange = (event) => {
+        this.setState({
+            searchValue: event.currentTarget.value
+        }); 
     }
     handleSubmit = (event) => {
         event.preventDefault();
         this.resetSearch();
+        this.fetchImages(this.state.searchValue, 1);
         const form = event.currentTarget;
-        // this.state.searchValue = form.elements.search.value;
-        this.setState({
-            searchValue: form.elements.search.value });
-        console.log(form.elements.search.value)
-        console.log(this.state.searchValue, this.state.pageNr);
-        this.fetchImages(this.state.searchValue, this.state.pageNr);
         form.reset();
     }
 
@@ -81,11 +77,11 @@ class ImageFinder extends Component {
                 isSpinnerLoading: false
             });
             scroll();
+            console.log(this.state.pageNr);
         }   
     }
 
     loadMore = (event) => {
-        event.preventDefault();
         this.fetchImages(this.state.searchValue, this.state.pageNr);     
     }
     
@@ -130,9 +126,9 @@ class ImageFinder extends Component {
         } 
         return (
             <div>
-                <Searchbar onSubmit={this.handleSubmit} />
+                <Searchbar onSubmit={this.handleSubmit} onChange={this.handleChange} />
                 <ImageGallery children={this.renderImages(images)} ></ImageGallery>
-                <Button loadMore={this.loadMore} isButtonVisible={isButtonVisible} pageNr={pageNr} />
+                <Button loadMore={this.loadMore} isButtonVisible={isButtonVisible} />
                 <Audio className="Audio" visible={isSpinnerLoading} />
                 <Modal isModalVisible={isModalVisible} imageLargeURL={this.state.imageLargeURL}
                         alt={this.state.alt} closeModal={this.closeModal}/>
